@@ -43,7 +43,7 @@ bool CheckForThreats(Board *b, const int x, const int y)
         // horizontal
         if (i != x && b->board[i][y] == true)
         {
-            std::cout << "Threat found at (" << i << ", " << y << ")" << std::endl;
+            std::cout << "Threat found on the horizontal at (" << i << ", " << y << ")" << std::endl;
             return true;
         }
             
@@ -52,22 +52,32 @@ bool CheckForThreats(Board *b, const int x, const int y)
             // vertical
             if (j != y && b->board[x][j] == true)
             {
-                std::cout << "Threat found at (" << x << ", " << j << ")" << std::endl;
+                std::cout << "Threat found on the vertical at (" << x << ", " << j << ")" << std::endl;
                 return true;
             }
             
-            //bottom left/top right diagonal
-            if (i != x && j != y && b->board[i][j])
+            // top left/bottom right diagonal
+            int _diagX1 = x + i;
+            int _diagY1 = y + j;
+            if (_diagX1 != x && _diagY1 != y && _diagX1 < b->size && _diagY1 < b->size)
             {
-                std::cout << "Threat found at (" << i << ", " << j << ")" << std::endl;
-                return true;
+                if (b->board[_diagX1][_diagY1])
+                {
+                    std::cout << "Threat found on the 1st diagonal at (" << _diagX1 << ", " << _diagY1 << ")" << std::endl;
+                    return true;
+                }
             }
             
-            //top left/bottom right diagonal
-            if (i != x && j != y && b->board[i][b->size - j])
+            // bottom left/top right diagonal
+            int _diagX2 = x + i;
+            int _diagY2 = b->size - (y + j);
+            if (_diagX2 != x && _diagY2 != y && _diagX2 < b->size && _diagY2 > 0)
             {
-                std::cout << "Threat found at (" << i << ", " << b->size - j << ")" << std::endl;
-                return true;
+                if (b->board[_diagX2][_diagY2])
+                {
+                    std::cout << "Threat found on the 2nd diagonal at (" << _diagX2 << ", " << _diagY2 << ")" << std::endl;
+                    return true;
+                }
             }
         }
     }
@@ -79,20 +89,25 @@ bool Solve(Board *b)
 {
     b->PlaceQueen(0, 0);    // first queen always goes at (0, 0)
 
-    for (int i = 0; i < b->size; i++)
+    int numQueens = b->size - 1;
+    
+    while (numQueens > 0)
     {
-        for (int j = 0; j < b->size; j++)
+        for (int i = 0; i < b->size; i++)
         {
-            std::cout << "(" << i << ", " << j << std::endl;
-            if (!CheckForThreats(b, i, j))
+            for (int j = 0; j < b->size; j++)
             {
-                b->PlaceQueen(i, j);
-                std::cout << "Queen placed at (" << i << ", " << j << ")" << std::endl;
-            }
-            else {
-                std::cout << "Threatening!" << std::endl;
+                std::cout << "(" << i << ", " << j << std::endl;
+                if (!CheckForThreats(b, i, j))
+                {
+                    b->PlaceQueen(i, j);
+                    numQueens--;
+                    std::cout << "Queen placed at (" << i << ", " << j << ")" << std::endl;
+                    
+                }
             }
         }
+        std::cout << "Queens remaining: " << numQueens << std::endl;
     }
 }
 
