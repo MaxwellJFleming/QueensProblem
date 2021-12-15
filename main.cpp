@@ -97,7 +97,7 @@ bool Solve(Board *b)
         {
             for (int j = 0; j < b->size; j++)
             {
-                std::cout << "(" << i << ", " << j << std::endl;
+                std::cout << "(" << i << ", " << j << ")" << std::endl;
                 if (!CheckForThreats(b, i, j))
                 {
                     b->PlaceQueen(i, j);
@@ -111,9 +111,23 @@ bool Solve(Board *b)
     }
 }
 
+int UserInputHell()
+{
+    int _n;
+    while (true)
+    {
+        std::cout << "Pick a number 4 or greater: ";
+        std::cin >> _n;
+        if (_n > 3)
+        {
+            return _n;
+        }
+    }
+}
+
 int main()
 {
-    Board *b = new Board(8);
+    Board *b = new Board(UserInputHell());
     std::cout << "Board of size " << b->size << " made" << std::endl;
 
     Solve(b);
